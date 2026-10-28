@@ -9,11 +9,21 @@
             margin: 0;
             background-color: #0B132B;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            height: 100vh;
-            overflow: hidden;
+            min-height: 100vh;
+            overflow-x: hidden;
             font-family: Arial, sans-serif;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            max-width: 750px;
+            width: 100%;
         }
         canvas {
             background-color: #1C2541;
@@ -22,11 +32,43 @@
             max-width: 100%;
             height: auto;
         }
+        /* Mensaje final elegante fuera del canvas para que luzca perfecto en móviles */
+        #mensaje-final {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            animation: fadeIn 1.5s ease-in-out forwards;
+        }
+        #mensaje-final h2 {
+            color: #4CC9F0;
+            font-size: 28px;
+            margin: 0 0 10px 0;
+        }
+        #mensaje-final p {
+            color: #A5C4D4;
+            font-size: 16px;
+            font-style: italic;
+            line-height: 1.5;
+            margin: 0;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
     </style>
 </head>
 <body>
 
-<canvas id="simulacion" width="750" height="800"></canvas>
+<div class="container">
+    <canvas id="simulacion" width="750" height="800"></canvas>
+    
+    <div id="mensaje-final">
+        <h2>Te quiero Mary</h2>
+        <p>No soy de levantar paredes con cemento y ladrillos;<br>
+        pero con líneas de código puedo construirte un universo entero<br>
+        solo para verte sonreír. 😊</p>
+    </div>
+</div>
 
 <script>
 const canvas = document.getElementById('simulacion');
@@ -113,17 +155,8 @@ function animar() {
 
         requestAnimationFrame(animar);
     } else {
-        // Pantalla Final (Textos grandes y claros)
-        ctx.fillStyle = '#4CC9F0';
-        ctx.font = 'bold 42px Arial';
-        ctx.textAlign = 'center';
-        ctx.fillText("Te quiero Mary", 375, 260);
-
-        ctx.fillStyle = '#A5C4D4';
-        ctx.font = 'italic 21px Arial';
-        ctx.fillText("No soy de levantar paredes con cemento y ladrillos;", 375, 330);
-        ctx.fillText("pero con líneas de código puedo construirte un universo", 375, 370);
-        ctx.fillText("entero solo para verte sonreír. 😊", 375, 410);
+        // Mostrar el mensaje HTML fluido y grande abajo en cuanto termine la animación
+        document.getElementById('mensaje-final').style.display = 'block';
     }
 }
 
