@@ -26,19 +26,21 @@
 
 <canvas id="simulacion" width="750" height="800"></canvas>
 
+<!-- Elemento de audio MP3 (puedes cambiar el enlace por cualquier MP3 que te guste) -->
+<audio id="audioFinal" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c36660f4.mp3?filename=sweet-love-10333.mp3"></audio>
+
 <script>
 const canvas = document.getElementById('simulacion');
 const ctx = canvas.getContext('2d');
 
-// Coordenadas iniciales del dron
 let dron = { x: 375, y: 350 };
 let puntosDibujados = [];
+let audioReproducido = false; // Control para que suene una sola vez al terminar
 
 // Definir la casa (Violeta)
 let ox = 295, oy = 450, ancho = 160, alto = 120;
 let puntosCasa = [];
 
-// Generar puntos de la casa
 for (let x = ox; x <= ox + ancho; x += 10) puntosCasa.push({x: x, y: oy, color: '#9D4EDD'});
 for (let y = oy; y >= oy - alto; y -= 10) puntosCasa.push({x: ox + ancho, y: y, color: '#9D4EDD'});
 for (let i = 0; i <= 8; i++) {
@@ -57,13 +59,11 @@ for (let i = 0; i <= 8; i++) {
 }
 for (let y = oy - alto; y <= oy; y += 10) puntosCasa.push({x: ox, y: y, color: '#9D4EDD'});
 
-// Puerta
 let puertaX = ox + 65;
 for (let y = oy; y >= oy - 45; y -= 8) puntosCasa.push({x: puertaX, y: y, color: '#9D4EDD'});
 for (let x = puertaX; x <= puertaX + 30; x += 8) puntosCasa.push({x: x, y: oy - 45, color: '#9D4EDD'});
 for (let y = oy - 45; y <= oy; y += 8) puntosCasa.push({x: puertaX + 30, y: y, color: '#9D4EDD'});
 
-// Ventanas
 [ox + 25, ox + 115].forEach(vx => {
     let vy = oy - 70;
     for (let y = vy; y >= vy - 25; y -= 8) puntosCasa.push({x: vx, y: y, color: '#9D4EDD'});
@@ -87,7 +87,6 @@ let indiceActual = 0;
 function animar() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Dibujar puntos ya recorridos
     puntosDibujados.forEach(p => {
         ctx.beginPath();
         ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
@@ -98,7 +97,6 @@ function animar() {
     if (indiceActual < colaPuntos.length) {
         let destino = colaPuntos[indiceActual];
         
-        // Mover dron suavemente hacia el punto
         dron.x += (destino.x - dron.x) * 0.2;
         dron.y += (destino.y - dron.y) * 0.2;
 
@@ -107,7 +105,6 @@ function animar() {
             indiceActual++;
         }
 
-        // Dibujar el dron (punto brillante)
         ctx.beginPath();
         ctx.arc(dron.x, dron.y, 6, 0, Math.PI * 2);
         ctx.fillStyle = '#4CC9F0';
@@ -129,10 +126,16 @@ function animar() {
         ctx.fillText("No soy de levantar paredes con cemento y ladrillos;", 375, 340);
         ctx.fillText("pero con líneas de código puedo construirte un universo entero", 375, 370);
         ctx.fillText("solo para verte sonreír. 😊", 375, 400);
+
+        // Reproducir el MP3 justo al terminar la animación (aprovechando que ella ya interactuó abriendo el link)
+        if (!audioReproducido) {
+            let audio = document.getElementById('audioFinal');
+            audio.play().catch(e => console.log("Audio prevenido por el navegador", e));
+            audioReproducido = true;
+        }
     }
 }
 
-// Arrancar animación tras 1 segundo automáticamente
 setTimeout(animar, 1000);
 </script>
 
