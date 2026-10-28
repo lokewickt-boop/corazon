@@ -48,9 +48,6 @@
 
     <canvas id="simulacion" width="750" height="800"></canvas>
 
-    <!-- Audio MP3 de fondo -->
-    <audio id="musicaFondo" loop src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c36660f4.mp3?filename=sweet-love-10333.mp3"></audio>
-
 <script>
 const canvas = document.getElementById('simulacion');
 const ctx = canvas.getContext('2d');
@@ -105,14 +102,53 @@ for (let t_val = 0; t_val < 63; t_val += 2) {
 let colaPuntos = [...puntosCasa, ...puntosCorazon];
 let indiceActual = 0;
 
+// Generador de música integrada (Sintetizador Web Audio)
+function reproducirMelodiaRomantica() {
+    try {
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        
+        // Notas musicales de una dulce melodía (frecuencias en Hz)
+        const notas = [
+            523.25, 659.25, 783.99, 1046.50, // Do, Mi, Sol, Do alto
+            880.00, 783.99, 659.25,          // La, Sol, Mi
+            587.33, 698.46, 880.00, 932.33,  // Re, Fa, La, Sib
+            880.00, 783.99, 659.25, 523.25   // La, Sol, Mi, Do
+        ];
+        
+        let tiempoInicio = audioCtx.currentTime + 0.1;
+        
+        // Repetir la secuencia suavemente mientras dure la animación
+        for (let ciclo = 0; ciclo < 4; ciclo++) {
+            notas.forEach((freq, index) => {
+                let osc = audioCtx.createOscillator();
+                let gain = audioCtx.createGain();
+                
+                osc.type = 'sine'; // Onda suave tipo flauta o cajita musical
+                osc.frequency.setValueAtTime(freq, tiempoInicio + (ciclo * 3.5) + (index * 0.25));
+                
+                // Control de volumen suave (fade in/out para que no suene cortante)
+                gain.gain.setValueAtTime(0, tiempoInicio + (ciclo * 3.5) + (index * 0.25));
+                gain.gain.linearRampToValueAtTime(0.12, tiempoInicio + (ciclo * 3.5) + (index * 0.25) + 0.05);
+                gain.gain.exponentialRampToValueAtTime(0.001, tiempoInicio + (ciclo * 3.5) + (index * 0.25) + 0.3);
+                
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+                
+                osc.start(tiempoInicio + (ciclo * 3.5) + (index * 0.25));
+                osc.stop(tiempoInicio + (ciclo * 3.5) + (index * 0.25 + 0.35));
+            });
+        }
+    } catch(e) {
+        console.log("Audio sintetizado no soportado", e);
+    }
+}
+
 function iniciarMagia() {
     // Ocultar el botón de corazón
     document.getElementById('btn-sorpresa').style.display = 'none';
 
-    // Reproducir música (autorizada por el toque en Android)
-    let musica = document.getElementById('musicaFondo');
-    musica.volume = 0.6;
-    musica.play().catch(e => console.log("Error de audio:", e));
+    // Activar la música generada por código
+    reproducirMelodiaRomantica();
 
     // Arrancar la animación
     requestAnimationFrame(animar);
@@ -166,5 +202,3 @@ function animar() {
 
 </body>
 </html>
-
-     
