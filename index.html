@@ -113,7 +113,7 @@ function animar() {
 
         requestAnimationFrame(animar);
     } else {
-        // Pantalla Final con estilo unificado, cursiva y tamaño legible (aprox 3 tallas menor que el título principal)
+        // Pantalla Final: Aumentamos de 20px a 22px para que se lea perfectamente
         ctx.textAlign = 'center';
 
         // Título principal brillante
@@ -121,9 +121,9 @@ function animar() {
         ctx.font = 'bold 38px Arial';
         ctx.fillText("Te quiero Mary", 375, 230);
 
-        // Texto secundario en cursiva, color suave y tamaño cómodo
+        // Texto secundario en cursiva con tamaño optimizado (22px)
         ctx.fillStyle = '#B8D8E8';
-        ctx.font = 'italic 20px Arial';
+        ctx.font = 'italic 22px Arial';
         ctx.fillText("No soy de levantar paredes con cemento y ladrillos;", 375, 300);
         ctx.fillText("pero con líneas de código puedo construirte un universo entero", 375, 335);
         ctx.fillText("solo para verte sonreír. 😊", 375, 370);
