@@ -9,37 +9,60 @@
             margin: 0;
             background-color: #0B132B;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             overflow: hidden;
             font-family: Arial, sans-serif;
+            color: white;
         }
         canvas {
             background-color: #1C2541;
-            box-shadow: 0 0 20px rgba(0,0,0,0.5);
-            border-radius: 10px;
+            box-shadow: 0 0 25px rgba(0,0,0,0.6);
+            border-radius: 12px;
+        }
+        /* Botón elegante para activar el audio (los navegadores móviles exigen un toque para sonar) */
+        #btn-empezar {
+            position: absolute;
+            background: linear-gradient(135deg, #FF0054, #7209B7);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.4);
+            z-index: 10;
+            transition: transform 0.2s;
+        }
+        #btn-empezar:hover {
+            transform: scale(1.05);
         }
     </style>
 </head>
 <body>
 
-<canvas id="simulacion" width="750" height="800"></canvas>
+    <button id="btn-empezar" onclick="comenzarSorpresa()">Toca aquí para tu sorpresa 💖</button>
+    <canvas id="simulacion" width="750" height="800"></canvas>
+
+    <!-- Música ambiental de fondo romántica y suave (Audio libre de derechos) -->
+    <audio id="musicaFondo" loop>
+        <source src="https://cdn.pixabay.com/download/audio/2022/05/27/audio_1808fbf756.mp3?filename=gentle-romantic-piano-110829.mp3" type="audio/mpeg">
+    </audio>
 
 <script>
 const canvas = document.getElementById('simulacion');
 const ctx = canvas.getContext('2d');
 
-// Coordenadas iniciales del dron
 let dron = { x: 375, y: 350 };
 let puntosDibujados = [];
-let estado = 'casa'; // casa, corazon, final
 
 // Definir la casa (Violeta)
 let ox = 295, oy = 450, ancho = 160, alto = 120;
 let puntosCasa = [];
 
-// Generar puntos de la casa
 for (let x = ox; x <= ox + ancho; x += 10) puntosCasa.push({x: x, y: oy, color: '#9D4EDD'});
 for (let y = oy; y >= oy - alto; y -= 10) puntosCasa.push({x: ox + ancho, y: y, color: '#9D4EDD'});
 for (let i = 0; i <= 8; i++) {
@@ -58,13 +81,11 @@ for (let i = 0; i <= 8; i++) {
 }
 for (let y = oy - alto; y <= oy; y += 10) puntosCasa.push({x: ox, y: y, color: '#9D4EDD'});
 
-// Puerta
 let puertaX = ox + 65;
 for (let y = oy; y >= oy - 45; y -= 8) puntosCasa.push({x: puertaX, y: y, color: '#9D4EDD'});
 for (let x = puertaX; x <= puertaX + 30; x += 8) puntosCasa.push({x: x, y: oy - 45, color: '#9D4EDD'});
 for (let y = oy - 45; y <= oy; y += 8) puntosCasa.push({x: puertaX + 30, y: y, color: '#9D4EDD'});
 
-// Ventanas
 [ox + 25, ox + 115].forEach(vx => {
     let vy = oy - 70;
     for (let y = vy; y >= vy - 25; y -= 8) puntosCasa.push({x: vx, y: y, color: '#9D4EDD'});
@@ -85,10 +106,20 @@ for (let t_val = 0; t_val < 63; t_val += 2) {
 let colaPuntos = [...puntosCasa, ...puntosCorazon];
 let indiceActual = 0;
 
+function comenzarSorpresa() {
+    // Ocultar botón y reproducir música
+    document.getElementById('btn-empezar').style.display = 'none';
+    let musica = document.getElementById('musicaFondo');
+    musica.volume = 0.5;
+    musica.play().catch(e => console.log("Audio bloqueado por navegador", e));
+
+    // Iniciar animación
+    setTimeout(animar, 500);
+}
+
 function animar() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    // Dibujar puntos ya recorridos
     puntosDibujados.forEach(p => {
         ctx.beginPath();
         ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
@@ -99,16 +130,15 @@ function animar() {
     if (indiceActual < colaPuntos.length) {
         let destino = colaPuntos[indiceActual];
         
-        // Mover dron suavemente hacia el punto
-        dron.x += (destino.x - dron.x) * 0.2;
-        dron.y += (destino.y - dron.y) * 0.2;
+        dron.x += (destino.x - dron.x) * 0.25;
+        dron.y += (destino.y - dron.y) * 0.25;
 
         if (Math.hypot(destino.x - dron.x, destino.y - dron.y) < 1) {
             puntosDibujados.push(destino);
             indiceActual++;
         }
 
-        // Dibujar el dron (punto brillante)
+        // Dron
         ctx.beginPath();
         ctx.arc(dron.x, dron.y, 6, 0, Math.PI * 2);
         ctx.fillStyle = '#4CC9F0';
@@ -123,18 +153,15 @@ function animar() {
         ctx.fillStyle = '#4CC9F0';
         ctx.font = 'bold 38px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText("Te quiero Mary", 375, 280);
+        ctx.fillText("Te quiero Mary", 375, 270);
 
         ctx.fillStyle = '#A5C4D4';
-        ctx.font = 'italic 16px Arial';
-        ctx.fillText("No soy de levantar paredes con cemento y ladrillos;", 375, 340);
-        ctx.fillText("pero con líneas de código puedo construirte un universo entero", 375, 370);
-        ctx.fillText("solo para verte sonreír. 😊", 375, 400);
+        ctx.font = 'italic 15px Arial';
+        ctx.fillText("No soy de levantar paredes con cemento y ladrillos;", 375, 335);
+        ctx.fillText("pero con líneas de código puedo construirte un universo entero", 375, 365);
+        ctx.fillText("solo para verte sonreír. 😊", 375, 395);
     }
 }
-
-// Arrancar animación tras 1 segundo
-setTimeout(animar, 1000);
 </script>
 
 </body>
