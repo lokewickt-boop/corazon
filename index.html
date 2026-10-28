@@ -19,7 +19,6 @@
             background-color: #1C2541;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
             border-radius: 10px;
-            /* Esto hace que se adapte mágicamente a cualquier celular o PC */
             max-width: 100%;
             height: auto;
         }
@@ -114,17 +113,17 @@ function animar() {
 
         requestAnimationFrame(animar);
     } else {
-        // Pantalla Final
+        // Pantalla Final (Textos grandes y claros)
         ctx.fillStyle = '#4CC9F0';
-        ctx.font = 'bold 38px Arial';
+        ctx.font = 'bold 42px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText("Te quiero Mary", 375, 270);
+        ctx.fillText("Te quiero Mary", 375, 260);
 
         ctx.fillStyle = '#A5C4D4';
-        ctx.font = 'italic 15px Arial';
-        ctx.fillText("No soy de levantar paredes con cemento y ladrillos;", 375, 335);
-        ctx.fillText("pero con líneas de código puedo construirte un universo entero", 375, 365);
-        ctx.fillText("solo para verte sonreír. 😊", 375, 395);
+        ctx.font = 'italic 21px Arial';
+        ctx.fillText("No soy de levantar paredes con cemento y ladrillos;", 375, 330);
+        ctx.fillText("pero con líneas de código puedo construirte un universo", 375, 370);
+        ctx.fillText("entero solo para verte sonreír. 😊", 375, 410);
     }
 }
 
