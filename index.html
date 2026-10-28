@@ -9,6 +9,7 @@
             margin: 0;
             background-color: #0B132B;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
@@ -20,14 +21,35 @@
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
             border-radius: 10px;
         }
+        /* Botón de corazón para habilitar el sonido y arrancar */
+        #btn-sorpresa {
+            position: absolute;
+            background: linear-gradient(135deg, #FF0054, #9D4EDD);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            font-size: 20px;
+            font-weight: bold;
+            border-radius: 40px;
+            cursor: pointer;
+            box-shadow: 0 0 25px rgba(255, 0, 84, 0.6);
+            z-index: 10;
+            transition: transform 0.2s ease;
+        }
+        #btn-sorpresa:hover {
+            transform: scale(1.1);
+        }
     </style>
 </head>
 <body>
 
-<canvas id="simulacion" width="750" height="800"></canvas>
+    <!-- Botón interactivo que pide el toque para activar audio y animación -->
+    <button id="btn-sorpresa" onclick="iniciarMagia()">❤️ Tócame</button>
 
-<!-- Elemento de audio MP3 (puedes cambiar el enlace por cualquier MP3 que te guste) -->
-<audio id="audioFinal" src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c36660f4.mp3?filename=sweet-love-10333.mp3"></audio>
+    <canvas id="simulacion" width="750" height="800"></canvas>
+
+    <!-- Audio MP3 de fondo -->
+    <audio id="musicaFondo" loop src="https://cdn.pixabay.com/download/audio/2022/03/15/audio_c8c36660f4.mp3?filename=sweet-love-10333.mp3"></audio>
 
 <script>
 const canvas = document.getElementById('simulacion');
@@ -35,7 +57,6 @@ const ctx = canvas.getContext('2d');
 
 let dron = { x: 375, y: 350 };
 let puntosDibujados = [];
-let audioReproducido = false; // Control para que suene una sola vez al terminar
 
 // Definir la casa (Violeta)
 let ox = 295, oy = 450, ancho = 160, alto = 120;
@@ -84,6 +105,19 @@ for (let t_val = 0; t_val < 63; t_val += 2) {
 let colaPuntos = [...puntosCasa, ...puntosCorazon];
 let indiceActual = 0;
 
+function iniciarMagia() {
+    // Ocultar el botón de "Tócame"
+    document.getElementById('btn-sorpresa').style.display = 'none';
+
+    // Reproducir la música de fondo (ahora permitido por Android al haber toque)
+    let musica = document.getElementById('musicaFondo');
+    musica.volume = 0.6;
+    musica.play().catch(e => console.log("Error de audio:", e));
+
+    // Arrancar la animación del dron
+    requestAnimationFrame(animar);
+}
+
 function animar() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -115,7 +149,7 @@ function animar() {
 
         requestAnimationFrame(animar);
     } else {
-        // Pantalla Final
+        // Pantalla Final con la dedicatoria
         ctx.fillStyle = '#4CC9F0';
         ctx.font = 'bold 38px Arial';
         ctx.textAlign = 'center';
@@ -126,18 +160,10 @@ function animar() {
         ctx.fillText("No soy de levantar paredes con cemento y ladrillos;", 375, 340);
         ctx.fillText("pero con líneas de código puedo construirte un universo entero", 375, 370);
         ctx.fillText("solo para verte sonreír. 😊", 375, 400);
-
-        // Reproducir el MP3 justo al terminar la animación (aprovechando que ella ya interactuó abriendo el link)
-        if (!audioReproducido) {
-            let audio = document.getElementById('audioFinal');
-            audio.play().catch(e => console.log("Audio prevenido por el navegador", e));
-            audioReproducido = true;
-        }
     }
 }
-
-setTimeout(animar, 1000);
 </script>
 
 </body>
 </html>
+
