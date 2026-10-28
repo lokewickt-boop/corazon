@@ -9,31 +9,31 @@
             margin: 0;
             background-color: #0B132B;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             overflow: hidden;
             font-family: Arial, sans-serif;
+            position: relative;
         }
         canvas {
             background-color: #1C2541;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
             border-radius: 10px;
         }
-        /* Botón de corazón para habilitar el sonido y arrancar */
+        /* Botón de corazón estilizado y perfectamente centrado */
         #btn-sorpresa {
             position: absolute;
             background: linear-gradient(135deg, #FF0054, #9D4EDD);
             color: white;
             border: none;
-            padding: 16px 32px;
-            font-size: 20px;
+            padding: 20px 40px;
+            font-size: 22px;
             font-weight: bold;
-            border-radius: 40px;
+            border-radius: 50px;
             cursor: pointer;
-            box-shadow: 0 0 25px rgba(255, 0, 84, 0.6);
-            z-index: 10;
+            box-shadow: 0 0 30px rgba(255, 0, 84, 0.7);
+            z-index: 99;
             transition: transform 0.2s ease;
         }
         #btn-sorpresa:hover {
@@ -43,7 +43,7 @@
 </head>
 <body>
 
-    <!-- Botón interactivo que pide el toque para activar audio y animación -->
+    <!-- Botón interactivo central -->
     <button id="btn-sorpresa" onclick="iniciarMagia()">❤️ Tócame</button>
 
     <canvas id="simulacion" width="750" height="800"></canvas>
@@ -106,15 +106,15 @@ let colaPuntos = [...puntosCasa, ...puntosCorazon];
 let indiceActual = 0;
 
 function iniciarMagia() {
-    // Ocultar el botón de "Tócame"
+    // Ocultar el botón de corazón
     document.getElementById('btn-sorpresa').style.display = 'none';
 
-    // Reproducir la música de fondo (ahora permitido por Android al haber toque)
+    // Reproducir música (autorizada por el toque en Android)
     let musica = document.getElementById('musicaFondo');
     musica.volume = 0.6;
     musica.play().catch(e => console.log("Error de audio:", e));
 
-    // Arrancar la animación del dron
+    // Arrancar la animación
     requestAnimationFrame(animar);
 }
 
@@ -149,7 +149,7 @@ function animar() {
 
         requestAnimationFrame(animar);
     } else {
-        // Pantalla Final con la dedicatoria
+        // Pantalla Final
         ctx.fillStyle = '#4CC9F0';
         ctx.font = 'bold 38px Arial';
         ctx.textAlign = 'center';
@@ -167,3 +167,4 @@ function animar() {
 </body>
 </html>
 
+     
