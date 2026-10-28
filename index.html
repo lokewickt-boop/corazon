@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para ti, Mary</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: #0B132B;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        canvas {
+            background-color: #1C2541;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<canvas id="simulacion" width="750" height="800"></canvas>
+
+<script>
+const canvas = document.getElementById('simulacion');
+const ctx = canvas.getContext('2d');
+
+// Coordenadas iniciales del dron
+let dron = { x: 375, y: 350 };
+let puntosDibujados = [];
+let estado = 'casa'; // casa, corazon, final
+
+// Definir la casa (Violeta)
+let ox = 295, oy = 450, ancho = 160, alto = 120;
+let puntosCasa = [];
+
+// Generar puntos de la casa
+for (let x = ox; x <= ox + ancho; x += 10) puntosCasa.push({x: x, y: oy, color: '#9D4EDD'});
+for (let y = oy; y >= oy - alto; y -= 10) puntosCasa.push({x: ox + ancho, y: y, color: '#9D4EDD'});
+for (let i = 0; i <= 8; i++) {
+    puntosCasa.push({
+        x: (ox + ancho) - (i * (ancho / 2) / 8),
+        y: (oy - alto) - (i * 70 / 8),
+        color: '#9D4EDD'
+    });
+}
+for (let i = 0; i <= 8; i++) {
+    puntosCasa.push({
+        x: (ox + ancho / 2) - (i * (ancho / 2) / 8),
+        y: (oy - alto - 70) + (i * 70 / 8),
+        color: '#9D4EDD'
+    });
+}
+for (let y = oy - alto; y <= oy; y += 10) puntosCasa.push({x: ox, y: y, color: '#9D4EDD'});
+
+// Puerta
+let puertaX = ox + 65;
+for (let y = oy; y >= oy - 45; y -= 8) puntosCasa.push({x: puertaX, y: y, color: '#9D4EDD'});
+for (let x = puertaX; x <= puertaX + 30; x += 8) puntosCasa.push({x: x, y: oy - 45, color: '#9D4EDD'});
+for (let y = oy - 45; y <= oy; y += 8) puntosCasa.push({x: puertaX + 30, y: y, color: '#9D4EDD'});
+
+// Ventanas
+[ox + 25, ox + 115].forEach(vx => {
+    let vy = oy - 70;
+    for (let y = vy; y >= vy - 25; y -= 8) puntosCasa.push({x: vx, y: y, color: '#9D4EDD'});
+    for (let x = vx; x <= vx + 20; x += 8) puntosCasa.push({x: x, y: vy - 25, color: '#9D4EDD'});
+    for (let y = vy - 25; y <= vy; y += 8) puntosCasa.push({x: vx + 20, y: y, color: '#9D4EDD'});
+    for (let x = vx + 20; x >= vx; x -= 8) puntosCasa.push({x: x, y: vy, color: '#9D4EDD'});
+});
+
+// Definir el corazón (Rojo)
+let puntosCorazon = [];
+for (let t_val = 0; t_val < 63; t_val += 2) {
+    let t = t_val / 10.0;
+    let hx = Math.round(375 + 16 * (16 * Math.pow(Math.sin(t), 3)));
+    let hy = Math.round(320 - 16 * (13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t)));
+    puntosCorazon.push({x: hx, y: hy, color: '#FF0054'});
+}
+
+let colaPuntos = [...puntosCasa, ...puntosCorazon];
+let indiceActual = 0;
+
+function animar() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+    // Dibujar puntos ya recorridos
+    puntosDibujados.forEach(p => {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
+        ctx.fillStyle = p.color;
+        ctx.fill();
+    });
+
+    if (indiceActual < colaPuntos.length) {
+        let destino = colaPuntos[indiceActual];
+        
+        // Mover dron suavemente hacia el punto
+        dron.x += (destino.x - dron.x) * 0.2;
+        dron.y += (destino.y - dron.y) * 0.2;
+
+        if (Math.hypot(destino.x - dron.x, destino.y - dron.y) < 1) {
+            puntosDibujados.push(destino);
+            indiceActual++;
+        }
+
+        // Dibujar el dron (punto brillante)
+        ctx.beginPath();
+        ctx.arc(dron.x, dron.y, 6, 0, Math.PI * 2);
+        ctx.fillStyle = '#4CC9F0';
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 2;
+        ctx.fill();
+        ctx.stroke();
+
+        requestAnimationFrame(animar);
+    } else {
+        // Pantalla Final
+        ctx.fillStyle = '#4CC9F0';
+        ctx.font = 'bold 38px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText("Te quiero Mary", 375, 280);
+
+        ctx.fillStyle = '#A5C4D4';
+        ctx.font = 'italic 16px Arial';
+        ctx.fillText("No soy de levantar paredes con cemento y ladrillos;", 375, 340);
+        ctx.fillText("pero con líneas de código puedo construirte un universo entero", 375, 370);
+        ctx.fillText("solo para verte sonreír. 😊", 375, 400);
+    }
+}
+
+// Arrancar animación tras 1 segundo
+setTimeout(animar, 1000);
+</script>
+
+</body>
+</html>
