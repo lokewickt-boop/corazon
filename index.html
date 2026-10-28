@@ -14,39 +14,17 @@
             height: 100vh;
             overflow: hidden;
             font-family: Arial, sans-serif;
-            position: relative;
         }
         canvas {
             background-color: #1C2541;
             box-shadow: 0 0 20px rgba(0,0,0,0.5);
             border-radius: 10px;
         }
-        /* Botón de corazón estilizado y perfectamente centrado */
-        #btn-sorpresa {
-            position: absolute;
-            background: linear-gradient(135deg, #FF0054, #9D4EDD);
-            color: white;
-            border: none;
-            padding: 20px 40px;
-            font-size: 22px;
-            font-weight: bold;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 0 30px rgba(255, 0, 84, 0.7);
-            z-index: 99;
-            transition: transform 0.2s ease;
-        }
-        #btn-sorpresa:hover {
-            transform: scale(1.1);
-        }
     </style>
 </head>
 <body>
 
-    <!-- Botón interactivo central -->
-    <button id="btn-sorpresa" onclick="iniciarMagia()">❤️ Tócame</button>
-
-    <canvas id="simulacion" width="750" height="800"></canvas>
+<canvas id="simulacion" width="750" height="800"></canvas>
 
 <script>
 const canvas = document.getElementById('simulacion');
@@ -102,58 +80,6 @@ for (let t_val = 0; t_val < 63; t_val += 2) {
 let colaPuntos = [...puntosCasa, ...puntosCorazon];
 let indiceActual = 0;
 
-// Generador de música integrada (Sintetizador Web Audio)
-function reproducirMelodiaRomantica() {
-    try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        
-        // Notas musicales de una dulce melodía (frecuencias en Hz)
-        const notas = [
-            523.25, 659.25, 783.99, 1046.50, // Do, Mi, Sol, Do alto
-            880.00, 783.99, 659.25,          // La, Sol, Mi
-            587.33, 698.46, 880.00, 932.33,  // Re, Fa, La, Sib
-            880.00, 783.99, 659.25, 523.25   // La, Sol, Mi, Do
-        ];
-        
-        let tiempoInicio = audioCtx.currentTime + 0.1;
-        
-        // Repetir la secuencia suavemente mientras dure la animación
-        for (let ciclo = 0; ciclo < 4; ciclo++) {
-            notas.forEach((freq, index) => {
-                let osc = audioCtx.createOscillator();
-                let gain = audioCtx.createGain();
-                
-                osc.type = 'sine'; // Onda suave tipo flauta o cajita musical
-                osc.frequency.setValueAtTime(freq, tiempoInicio + (ciclo * 3.5) + (index * 0.25));
-                
-                // Control de volumen suave (fade in/out para que no suene cortante)
-                gain.gain.setValueAtTime(0, tiempoInicio + (ciclo * 3.5) + (index * 0.25));
-                gain.gain.linearRampToValueAtTime(0.12, tiempoInicio + (ciclo * 3.5) + (index * 0.25) + 0.05);
-                gain.gain.exponentialRampToValueAtTime(0.001, tiempoInicio + (ciclo * 3.5) + (index * 0.25) + 0.3);
-                
-                osc.connect(gain);
-                gain.connect(audioCtx.destination);
-                
-                osc.start(tiempoInicio + (ciclo * 3.5) + (index * 0.25));
-                osc.stop(tiempoInicio + (ciclo * 3.5) + (index * 0.25 + 0.35));
-            });
-        }
-    } catch(e) {
-        console.log("Audio sintetizado no soportado", e);
-    }
-}
-
-function iniciarMagia() {
-    // Ocultar el botón de corazón
-    document.getElementById('btn-sorpresa').style.display = 'none';
-
-    // Activar la música generada por código
-    reproducirMelodiaRomantica();
-
-    // Arrancar la animación
-    requestAnimationFrame(animar);
-}
-
 function animar() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
@@ -189,15 +115,17 @@ function animar() {
         ctx.fillStyle = '#4CC9F0';
         ctx.font = 'bold 38px Arial';
         ctx.textAlign = 'center';
-        ctx.fillText("Te quiero Mary", 375, 280);
+        ctx.fillText("Te quiero Mary", 375, 270);
 
         ctx.fillStyle = '#A5C4D4';
-        ctx.font = 'italic 16px Arial';
-        ctx.fillText("No soy de levantar paredes con cemento y ladrillos;", 375, 340);
-        ctx.fillText("pero con líneas de código puedo construirte un universo entero", 375, 370);
-        ctx.fillText("solo para verte sonreír. 😊", 375, 400);
+        ctx.font = 'italic 15px Arial';
+        ctx.fillText("No soy de levantar paredes con cemento y ladrillos;", 375, 335);
+        ctx.fillText("pero con líneas de código puedo construirte un universo entero", 375, 365);
+        ctx.fillText("solo para verte sonreír. 😊", 375, 395);
     }
 }
+
+setTimeout(animar, 1000);
 </script>
 
 </body>
